@@ -285,7 +285,8 @@ class Competition extends Model
                 return abort(400, 'Bad Request');
             }
 
-            $team_registered = \DB::table('team')->where('user_id', '=', $input['register_host_id'])->whereNull('deleted_at')->get();
+            $team_registered = \DB::table('team')->where('user_id', '=', $input['register_host_id'])
+                ->whereNull('deleted_at')->get();
             $registerd_array = [];
             foreach ($team_registered as $t) {
                 array_push($registerd_array,$t->category_id);
@@ -309,7 +310,8 @@ class Competition extends Model
             return abort(404, 'Resource Not Found');
         }
 
-        $categories = \DB::table('category')->where('competition_id', '=', $competition->competition_id)->select('category_id')->whereNull('deleted_at')->get();
+        $categories = \DB::table('category')->where('competition_id', '=', $competition->competition_id)
+            ->select('category_id')->whereNull('deleted_at')->get();
         $categories_tmp = [];
         foreach ($categories as $category) {
             $category = Category::findById($category->category_id);

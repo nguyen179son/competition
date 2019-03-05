@@ -114,19 +114,23 @@ class Category extends Model
 
     public static function findById($category_id)
     {
-        $category = \DB::table('category')->where('category_id', '=', $category_id)->get();
+        $category = \DB::table('category')->where('category_id', '=', $category_id)->whereNull('deleted_at')->get();
+        if (empty($category)) {
+            return abort(404,'Resource not found');
+        }
         $category = (array)$category[0];
-        $mcs = \DB::table('mc')->where('category_id', '=', $category_id)->get();
+        $mcs = \DB::table('mc')->where('category_id', '=', $category_id)->whereNull('deleted_at')->get();
         $category['mcs'] = $mcs;
-        $djs = \DB::table('dj')->where('category_id', '=', $category_id)->get();
+        $djs = \DB::table('dj')->where('category_id', '=', $category_id)->whereNull('deleted_at')->get();
         $category['djs'] = $djs;
-        $judges = \DB::table('judge')->where('category_id', '=', $category_id)->get();
+        $judges = \DB::table('judge')->where('category_id', '=', $category_id)->whereNull('deleted_at')->get();
         $category['judges'] = $judges;
-        $teams = \DB::table('team')->where('category_id', '=', $category_id)->get();
+        $teams = \DB::table('team')->where('category_id', '=', $category_id)->whereNull('deleted_at')->get();
         $team_tmp = [];
         foreach ($teams as $team) {
             $team = (array)$team;
-            $teamMembers = \DB::table('team_member')->where('team_id', '=', $team['team_id'])->select('member_name')->get();
+            $teamMembers = \DB::table('team_member')->where('team_id', '=', $team['team_id'])
+                ->select('member_name')->whereNull('deleted_at')->get();
             $array_member=[];
             foreach ($teamMembers as $teamMember) {
                 array_push($array_member,$teamMember->member_name) ;
@@ -137,7 +141,8 @@ class Category extends Model
             array_push($team_tmp, $team);
         }
 //        dd(\DB::table('dance_genre')->where('dance_genre_id','=',$category['dance_genre_id'])->get()[0]->dance_genre_name);
-        $category['dance_genre'] = \DB::table('dance_genre')->where('dance_genre_id', '=', $category['dance_genre_id'])->get()[0]->dance_genre_name;
+        $category['dance_genre'] = \DB::table('dance_genre')->where('dance_genre_id', '=', $category['dance_genre_id'])
+            ->get()[0]->dance_genre_name;
         $category['teams'] = $team_tmp;
         unset($category['dance_genre_id']);
         return $category;
