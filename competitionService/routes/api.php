@@ -12,8 +12,8 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('/competitions', 'CompetitionController@listCompetition');
 Route::prefix('competition')->group(function () {
-    Route::get('/','CompetitionController@listCompetition');
     Route::post('/', 'CompetitionController@store');
     Route::prefix('/{competition_id}')->group(function () {
         Route::get('/', 'CompetitionController@show');
@@ -56,4 +56,4 @@ Route::prefix('competition')->group(function () {
         });
     });
 });
-Route::get('/dance-genre','DanceGenreController@show');
+Route::get('/dance-genre', 'DanceGenreController@show');
