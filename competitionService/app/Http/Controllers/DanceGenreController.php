@@ -12,7 +12,6 @@ class DanceGenreController extends Controller
         foreach ($dance_genres as $dance_genre) {
             array_push($returnArray,$dance_genre->dance_genre_name);
         }
-        dd($returnArray);
         return response()->json($returnArray,200);
     }
 }
