@@ -113,13 +113,10 @@ class CompetitionController extends AppBaseController
         }
 
         $input = $request->all();
-        $input['host_id']=$input['user_id'];
-        $input['competition_name']=$input['name'];
-        $input['competition_description']=$input['description'];
         $validation = Validator::make($input, [
-            'host_id' => 'required|integer',
-            'competition_name' => 'required|string',
-            'competition_description' => 'required|string',
+            'user_id' => 'required|integer',
+            'name' => 'required|string',
+            'description' => 'required|string',
             'background_picture' => 'required|image|mimes:jpeg,jpg,png|max:10000',
             'start_date' => ['required', 'regex:/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/'],
             'start_time' => ['required', 'regex:/^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/'],
@@ -137,6 +134,9 @@ class CompetitionController extends AppBaseController
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
         }
+        $input['host_id']=$input['user_id'];
+        $input['competition_name']=$input['name'];
+        $input['competition_description']=$input['description'];
 
         $file = $request->file('background_picture');
         $name = time() . $file->getClientOriginalName();
