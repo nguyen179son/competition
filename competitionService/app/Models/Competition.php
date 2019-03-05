@@ -293,7 +293,7 @@ class Competition extends Model
             }
             $category=$category->whereIn('category_id',$registerd_array);
         }
-
+        $category = $category->whereNull('category.deleted_at');
         $category = $category->orderBy('start_date', 'asc')->groupBy('competition.competition_id')->select('competition.competition_id')->distinct('competition.competition_id')->get();
         $competitions = [];
         foreach ($category as $cat) {

@@ -116,7 +116,7 @@ class CompetitionController extends AppBaseController
         $validation = Validator::make($input, [
             'user_id' => 'required|integer',
             'name' => 'required|string',
-            'description' => 'required|string',
+            'descriptionóa' => 'required|string',
             'background_picture' => 'required|image|mimes:jpeg,jpg,png|max:10000',
             'start_date' => ['required', 'regex:/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/'],
             'start_time' => ['required', 'regex:/^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/'],
@@ -169,13 +169,13 @@ class CompetitionController extends AppBaseController
             return abort(403, 'Permission denied');
         }
 
-        $this->competitionRepository->delete($id);
 
         $categories = Category::all()->where('competition_id', '=', $id);
         foreach ($categories as $category) {
-            $this->categoryRepository->delete($category->category_id);
             Category::deleteEnvolvedRecords($category->category_id);
+            $this->categoryRepository->delete($category->category_id);
         }
+        $this->competitionRepository->delete($id);
         return response()->json([
             'success' => true
         ], 200);
