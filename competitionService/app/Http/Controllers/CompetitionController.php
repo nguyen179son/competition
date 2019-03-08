@@ -57,9 +57,9 @@ class CompetitionController extends AppBaseController
 //            'time_zone' => ['required', 'regex:/[+ | -][0-9]|1[0-1]/'],
             'time_zone' => ['required', 'string'],
             'address_name' => 'required|string',
-            'address_city' => 'required|string',
-            'address_state' => 'required|string',
-            'address_country' => 'required|string',
+            'address_city' => 'string',
+            'address_state' => 'string',
+            'address_country' => 'string',
             'address_longitude' => 'required|longitude',
             'address_latitude' => 'required|latitude',
         ]);

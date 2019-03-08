@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Validator;
@@ -145,7 +146,24 @@ class Competition extends Model
 
     public static function filterCompetition($input, $client, $competitionRepository)
     {
-        $category = \DB::table('category')->leftJoin('competition', 'category.competition_id', '=', 'competition.competition_id');
+        $validation = Validator::make($input, [
+            'page' => 'required|integer',
+        ]);
+        if ($validation->fails()) {
+            return abort(400, 'Bad Request');
+        }
+        $category = \DB::table('category')->rightJoin('competition', 'category.competition_id', '=', 'competition.competition_id');
+        $category = $category->whereNull('category.deleted_at');
+        if (isset($input['address_longitude']) && $input['address_longitude'] != null && isset($input['address_latitude']) && $input['address_latitude'] != null) {
+
+            if (isset($input['address_city']) || isset($input['address_country'])) {
+                if ($input['address_city'] != null || $input['address_country'] != null)
+                    return abort(400, 'Bad Request');
+            }
+            $category = $category->select(\DB::raw('3959 * acos( cos( radians(' . $input['address_latitude'] . ') ) 
+                * cos( radians( address_latitude ) ) * cos( radians( address_longitude ) - radians(' . $input['address_longitude'] . ') ) 
+                + sin( radians(' . $input['address_latitude'] . ') ) * sin( radians( address_latitude ) ) ) as distance, competition.competition_id'))->distinct('competition.competition_id');
+        }
         if (isset($input['name']) && $input['name'] != null) {
 
             $validation = Validator::make($input, [
@@ -165,13 +183,13 @@ class Competition extends Model
             if ($validation->fails()) {
                 return abort(400, 'Bad Request');
             }
-            $input['dance_genre_id'] = DanceGenre::all()->where('dance_genre_name', '=', $input['dance_genre'])[0]->dance_genre_id;
-            $category = $category->whrere('dance_genre_id', '=', $input['dance_genre_id']);
+            $input['dance_genre_id'] = \DB::table('dance_genre')->where('dance_genre_name', '=', $input['dance_genre'])->first()->dance_genre_id;
+            $category = $category->where('dance_genre_id', '=', $input['dance_genre_id']);
         }
 
         if (isset($input['number_of_team_members']) && $input['number_of_team_members'] != null) {
             $validation = Validator::make($input, [
-                'number_of_team_members' => 'image|mimes:jpeg,jpg,png|max:10000',
+                'number_of_team_members' => 'integer',
             ]);
             if ($validation->fails()) {
                 return abort(400, 'Bad Request');
@@ -203,7 +221,7 @@ class Competition extends Model
                 ->where('address_country', 'like', '%' . $input['address_country'] . '%');
         }
 
-        if (isset($input['from_date']) && $input['from_date'] != null && isset($input['end_date']) && $input['end_date'] != null) {
+        if (isset($input['from_date']) && $input['from_date'] != null && isset($input['to_date']) && $input['to_date'] != null) {
             $validation = Validator::make($input, [
                 'from_date' => ['regex:/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/', 'exist_with:' . $input['to_date']],
                 'to_date' => ['regex:/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/', 'greater:' . $input['from_date'], 'exist_with:' . $input['from_date']],
@@ -212,9 +230,9 @@ class Competition extends Model
                 return abort(400, 'Bad Request');
             }
             $from_date = date($input['from_date']);
-            $end_date = date($input['end_date']);
+            $end_date = date($input['to_date']);
 
-            $category = $category->whereBetween('start_date', $from_date, $end_date);
+            $category = $category->whereBetween('start_date', [$from_date, $end_date]);
         }
 
         if ((isset($input['address_longitude']) && $input['address_longitude'] != null) && !(isset($input['address_latitude']) && $input['address_latitude'] != null)) {
@@ -225,42 +243,6 @@ class Competition extends Model
             return abort(400, 'Bad Request');
         }
 
-        if (isset($input['address_longitude']) && $input['address_longitude'] != null && isset($input['address_latitude']) && $input['address_latitude'] != null) {
-
-            if (isset($input['address_city']) || isset($input['address_country'])) {
-                if ($input['address_city'] != null || $input['address_country'] != null)
-                    return abort(400, 'Bad Request');
-            }
-
-            $validation = Validator::make($input, [
-                'address_longitude' => 'address_longitude',
-                'address_latitude' => 'address_latitude',
-            ]);
-            if ($validation->fails()) {
-                return abort(400, 'Bad Request');
-            }
-            $url = 'https://maps.googleapis.com/maps/api/geocode/json';
-            $data = [
-                'latlng' => '' . $input['address_latitude'] . ',' . $input['address_longitude'],
-                'key' => 'AIzaSyC9oQ0zyf49tRgfavHxD6r9fNMvWKBOd_4'
-            ];
-            $response = $client->post($url, ['query' => $data]);
-            $result = json_decode($response->getBody()->getContents());
-            if (isset($result->results[0]) && $result->results[0] != null) {
-                foreach ($result->results[0]->address_components as $component) {
-                    if ($component->types[0] == 'administrative_area_level_1') {
-                        $address_city = $component->long_name;
-                    }
-                    if ($component->types[0] == 'address_country') {
-                        $address_country = $component->long_name;
-                    }
-                }
-            } else {
-                return abort(400, 'Bad Request');
-            }
-            $category = $category->where('address_city', 'like', '%' . $address_city . '%')
-                ->where('address_country', 'like', '%' . $address_country . '%');
-        }
 
         if (isset($input['user_host_id']) && $input['user_host_id'] != null) {
 
@@ -271,8 +253,8 @@ class Competition extends Model
             if ($validation->fails()) {
                 return abort(400, 'Bad Request');
             }
-
             $category = $category->where('host_id', '=', $input['user_host_id']);
+
         }
 
         if (isset($input['register_host_id']) && $input['register_host_id'] != null) {
@@ -289,18 +271,29 @@ class Competition extends Model
                 ->whereNull('deleted_at')->get();
             $registerd_array = [];
             foreach ($team_registered as $t) {
-                array_push($registerd_array,$t->category_id);
+                array_push($registerd_array, $t->category_id);
             }
-            $category=$category->whereIn('category_id',$registerd_array);
+            $category = $category->whereIn('category_id', $registerd_array);
         }
-        $category = $category->whereNull('category.deleted_at');
-        $category = $category->orderBy('start_date', 'asc')->groupBy('competition.competition_id')->select('competition.competition_id')->distinct('competition.competition_id')->get();
+
+        if (isset($input['address_longitude']) && $input['address_longitude'] != null && isset($input['address_latitude']) && $input['address_latitude'] != null) {
+            $category = $category->orderBy('distance');
+        }
+        $category=$category->get();
         $competitions = [];
         foreach ($category as $cat) {
             $comp = Competition::findById($cat->competition_id, $competitionRepository);
             array_push($competitions, $comp);
         }
-        return $competitions;
+
+        $my_time = Carbon::now()->subDay()->format('Y-m-d');
+        foreach ($competitions as $key => $competition) {
+            if (date($my_time) > $competition['start_date']) {
+                array_push($competitions, $competition);
+                unset($competitions[$key]);
+            }
+        }
+        return array_slice($competitions, ($input['page'] - 1) * 10, 10);
     }
 
     public static function findById($id, $competitionRepository)
@@ -319,7 +312,7 @@ class Competition extends Model
         }
         $competition['category'] = $categories_tmp;
         $competition['description'] = $competition['competition_description'];
-        $competition['name']=$competition['competition_name'];
+        $competition['name'] = $competition['competition_name'];
         unset($competition['competition_name']);
         unset($competition['competition_description']);
         $competition['address'] = ['name' => $competition['address_name'], 'city' => $competition['address_city'], 'country' => $competition['address_country'], 'state' => $competition['address_state'],
