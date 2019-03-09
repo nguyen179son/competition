@@ -135,9 +135,12 @@ class Category extends Model
             foreach ($teamMembers as $teamMember) {
                 array_push($array_member,$teamMember->member_name) ;
             }
+
             $team['members'] = $array_member;
             $team['name'] = $team['team_name'];
             unset($team['team_name']);
+            $team['creator_id'] = $team['user_id'];
+            unset($team['user_id']);
             array_push($team_tmp, $team);
         }
 //        dd(\DB::table('dance_genre')->where('dance_genre_id','=',$category['dance_genre_id'])->get()[0]->dance_genre_name);
