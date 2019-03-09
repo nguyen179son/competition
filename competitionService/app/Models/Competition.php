@@ -147,7 +147,7 @@ class Competition extends Model
     public static function filterCompetition($input, $client, $competitionRepository)
     {
         $validation = Validator::make($input, [
-            'page' => 'required|integer',
+            'page' => 'required|integer|min:0',
         ]);
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
