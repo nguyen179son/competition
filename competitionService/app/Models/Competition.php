@@ -283,7 +283,7 @@ class Competition extends Model
         if (isset($input['address_longitude']) && $input['address_longitude'] != null && isset($input['address_latitude']) && $input['address_latitude'] != null) {
             $category = $category->orderBy('distance');
         }
-        $category=$category->distinct('category.competition_id')->get();
+        $category=$category->whereNull('competition.deleted_at')->distinct('category.competition_id')->get();
         $competitions = [];
         foreach ($category as $cat) {
             $comp = Competition::findById($cat->competition_id, $competitionRepository);
