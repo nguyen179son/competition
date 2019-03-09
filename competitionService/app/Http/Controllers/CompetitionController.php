@@ -57,9 +57,9 @@ class CompetitionController extends AppBaseController
 //            'time_zone' => ['required', 'regex:/[+ | -][0-9]|1[0-1]/'],
             'time_zone' => ['required', 'string'],
             'address_name' => 'required|string',
-            'address_city' => 'string',
-            'address_state' => 'string',
-            'address_country' => 'string',
+//            'address_city' => 'string',
+//            'address_state' => 'string',
+//            'address_country' => 'string',
             'address_longitude' => 'required|longitude',
             'address_latitude' => 'required|latitude',
         ]);
@@ -116,7 +116,7 @@ class CompetitionController extends AppBaseController
         $validation = Validator::make($input, [
             'user_id' => 'required|integer',
             'name' => 'required|string',
-            'descriptionóa' => 'required|string',
+            'description' => 'required|string',
             'background_picture' => 'required|image|mimes:jpeg,jpg,png|max:10000',
             'start_date' => ['required', 'regex:/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/'],
             'start_time' => ['required', 'regex:/^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/'],
@@ -125,14 +125,17 @@ class CompetitionController extends AppBaseController
 //            'time_zone' => ['required', 'regex:/[+ | -][0-9]|1[0-1]/'],
             'time_zone' => ['required', 'string'],
             'address_name' => 'required|string',
-            'address_city' => 'required|string',
-            'address_state' => 'required|string',
-            'address_country' => 'required|string',
+//            'address_city' => 'string',
+//            'address_state' => 'string',
+//            'address_country' => 'string',
             'address_longitude' => 'required|longitude',
             'address_latitude' => 'required|latitude',
         ]);
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
+        }
+        if ($input['user_id'] != $competition->competition_id) {
+            return abort(409,'Conflict');
         }
         $input['host_id']=$input['user_id'];
         $input['competition_name']=$input['name'];
