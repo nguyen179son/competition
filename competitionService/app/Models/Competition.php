@@ -178,7 +178,7 @@ class Competition extends Model
 
         if (isset($input['dance_genre']) && $input['dance_genre'] != null) {
             $validation = Validator::make($input, [
-                'dance_genre' => 'string',
+                'dance_genre' => 'danceGenre',
             ]);
             if ($validation->fails()) {
                 return abort(400, 'Bad Request');
@@ -233,6 +233,10 @@ class Competition extends Model
             $end_date = date($input['to_date']);
 
             $category = $category->whereBetween('start_date', [$from_date, $end_date]);
+        }
+
+        if ((isset($input['from_date']) && $input['from_date'] != null) && !(isset($input['to_date']) && $input['to_date'] != null)) {
+            return abort(400, 'Bad Request');
         }
 
         if ((isset($input['address_longitude']) && $input['address_longitude'] != null) && !(isset($input['address_latitude']) && $input['address_latitude'] != null)) {

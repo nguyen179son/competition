@@ -183,7 +183,7 @@ class CompetitionController extends AppBaseController
 
     public function listCompetition(Request $request)
     {
-        $input = $request->all();
+        $input = $request->query();
         $competitions = Competition::filterCompetition($input,$this->client,$this->competitionRepository);
         return $competitions;
 
