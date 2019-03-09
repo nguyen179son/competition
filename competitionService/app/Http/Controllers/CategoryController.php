@@ -67,8 +67,8 @@ class CategoryController extends AppBaseController
             'user_id' => 'required|integer',
             'description' => 'required|string',
             'dance_genre' => 'required|danceGenre',
-            'number_of_team_members' => 'required|integer',
-            'number_of_max_teams' => 'required|integer',
+            'number_of_team_members' => 'required|integer|min:1',
+            'number_of_max_teams' => 'required|integer|min:1',
             'fee_currency' => 'required|string',
             'fee_amount' => 'required|numeric',
         ]);
@@ -112,8 +112,8 @@ class CategoryController extends AppBaseController
             'user_id' => 'required|integer',
             'description' => 'required|string',
             'dance_genre' => 'required|danceGenre',
-            'number_of_team_members' => 'required|integer',
-            'number_of_max_teams' => 'required|integer',
+            'number_of_team_members' => 'required|integer|min:1',
+            'number_of_max_teams' => 'required|integer|min:1',
             'fee_currency' => 'required|string',
             'fee_amount' => 'required|numeric',
         ]);
