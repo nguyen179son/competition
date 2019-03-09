@@ -135,7 +135,7 @@ class CompetitionController extends AppBaseController
             return abort(400, 'Bad Request');
         }
         if ($input['user_id'] != $competition->host_id) {
-            return abort(409,'Conflict');
+            return abort(403,'Conflict');
         }
         $input['host_id']=$input['user_id'];
         $input['competition_name']=$input['name'];
