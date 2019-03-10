@@ -70,7 +70,7 @@ class CompetitionController extends AppBaseController
         $input['competition_name'] = $input['name'];
         $input['competition_description'] = $input['description'];
         $file = $request->file('background_picture');
-        $name = time() . $file->getClientOriginalName();
+        $name = substr(md5(microtime()),rand(0,26),64);
         $filePath = 'competition/' . $name;
         $file->storeAs(
             'competition', $name, 's3'
@@ -157,7 +157,7 @@ class CompetitionController extends AppBaseController
         $input['competition_description'] = $input['description'];
 
 
-        $competition = $this->competitionRepository->update($input,$competition_id);
+        $competition = $this->competitionRepository->update($input, $competition_id);
         return response()->json([
             'success' => true
         ], 200);
