@@ -87,7 +87,8 @@ class TeamController extends AppBaseController
         $input = $request->all();
         $validation = Validator::make($input, [
             'name' => 'required|string',
-            'members' => 'required|array'
+            'members' => 'required|array',
+	    'user_id' => 'required|integer'
         ]);
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
@@ -126,7 +127,13 @@ class TeamController extends AppBaseController
         }
 
         $input = $request->all();
-        if ($input['user_id'] != $competition->host_id) {
+	$validation = Validator::make($input, [
+	    'user_id' => 'required|integer'
+        ]);
+        if ($validation->fails()) {
+            return abort(400, 'Bad Request');
+        }
+        if ($input['user_id'] != $competition->user_id) {
             return abort(403, 'Permission denied');
         }
 
