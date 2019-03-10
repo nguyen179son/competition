@@ -50,18 +50,15 @@ class TeamController extends AppBaseController
         $input = $request->all();
         $validation = Validator::make($input, [
             'name' => 'required|string',
-            'members' => 'required|array'
+            'members' => 'required|array',
+            'user_id' => 'required|integer'
         ]);
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
         }
-        if ($input['user_id'] != $competition->host_id) {
-            return abort(403, 'Permission denied');
-        }
 
         $input['team_name'] = $input['name'];
         $input['category_id'] = (int)$category_id;
-
         $team = $this->teamRepository->create($input);
         foreach ($input['members'] as $member) {
             $member = array('team_id' => $team->team_id, 'member_name' => $member);

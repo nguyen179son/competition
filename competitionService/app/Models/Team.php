@@ -30,7 +30,8 @@ class Team extends Model
 
     public $fillable = [
         'category_id',
-        'team_name'
+        'team_name',
+        'user_id'
     ];
 
     /**
@@ -41,7 +42,8 @@ class Team extends Model
     protected $casts = [
         'team_id' => 'integer',
         'category_id' => 'integer',
-        'team_name' => 'string'
+        'team_name' => 'string',
+        'user_id' =>'integer',
     ];
 
     /**

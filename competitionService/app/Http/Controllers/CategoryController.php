@@ -45,7 +45,7 @@ class CategoryController extends AppBaseController
             return abort(409, 'Conflict');
         }
         $category = Category::findById($category_id);
-        return response()->json([$category],200);
+        return response()->json($category,200);
     }
 
     /**
