@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
+use App\Models\TeamMember;
 use App\Repositories\CategoryRepository;
 use App\Repositories\CompetitionRepository;
 use App\Repositories\TeamMemberRepository;
@@ -94,7 +95,7 @@ class TeamController extends AppBaseController
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
         }
-        if ($input['user_id'] != $competition->host_id) {
+        if ($input['user_id'] != $team->user_id) {
             return abort(403, 'Permission denied');
         }
 
@@ -102,6 +103,7 @@ class TeamController extends AppBaseController
         $input['category_id'] = (int)$category_id;
 
         $team = $this->teamRepository->update($input, $team_id);
+        $team->delete_team_member();
         foreach ($input['members'] as $member) {
             $member = array('team_id' => $team->team_id, 'member_name' => $member);
             $mem = $this->teamMemberRepository->create($member);

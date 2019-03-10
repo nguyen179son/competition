@@ -1072,6 +1072,11 @@ class CurrencyController extends Controller
                 "name_plural" => "Zambian kwachas"
             ]
         ];
-        return response()->json($currencies, 200);
+        $header = array (
+            'Content-Type' => 'application/json; charset=UTF-8',
+            'charset' => 'utf-8'
+        );
+
+        return response()->json($currencies, 200,$header,JSON_UNESCAPED_UNICODE);
     }
 }

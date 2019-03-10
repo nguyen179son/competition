@@ -66,9 +66,9 @@ class CompetitionController extends AppBaseController
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
         }
-        $input['host_id']=$input['user_id'];
-        $input['competition_name']=$input['name'];
-        $input['competition_description']=$input['description'];
+        $input['host_id'] = $input['user_id'];
+        $input['competition_name'] = $input['name'];
+        $input['competition_description'] = $input['description'];
         $file = $request->file('background_picture');
         $name = time() . $file->getClientOriginalName();
         $filePath = 'competition/' . $name;
@@ -79,7 +79,7 @@ class CompetitionController extends AppBaseController
 
         $competition = $this->competitionRepository->create($input);
 
-        return response()->json(['competition_id'=>$competition->competition_id], 200);
+        return response()->json(['competition_id' => $competition->competition_id], 200);
     }
 
     /**
@@ -91,7 +91,7 @@ class CompetitionController extends AppBaseController
      */
     public function show($id)
     {
-        $competition = Competition::findById($id,$this->competitionRepository);
+        $competition = Competition::findById($id, $this->competitionRepository);
         return response()->json($competition, 200);
     }
 
@@ -117,7 +117,7 @@ class CompetitionController extends AppBaseController
             'user_id' => 'required|integer',
             'name' => 'required|string',
             'description' => 'required|string',
-            'background_picture' => 'required|image|mimes:jpeg,jpg,png|max:10000',
+//            'background_picture' => 'required|image|mimes:jpeg,jpg,png|max:10000',
             'start_date' => ['required', 'regex:/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/'],
             'start_time' => ['required', 'regex:/^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/'],
             'end_date' => ['required', 'regex:/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/', 'greater:' . $input['start_date']],
@@ -134,21 +134,30 @@ class CompetitionController extends AppBaseController
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
         }
-        if ($input['user_id'] != $competition->host_id) {
-            return abort(403,'Conflict');
+        if ($request->hasFile('background_picture')) {
+            $validation = Validator::make($input, [
+                'background_picture' => 'image|mimes:jpeg,jpg,png|max:10000',
+            ]);
+            $file = $request->file('background_picture');
+            $name = time() . $file->getClientOriginalName();
+            $filePath = 'competition/' . $name;
+            $file->storeAs(
+                'competition', $name, 's3'
+            );
+            $input['background_picture'] = 's3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $filePath;
         }
-        $input['host_id']=$input['user_id'];
-        $input['competition_name']=$input['name'];
-        $input['competition_description']=$input['description'];
+        if ($validation->fails()) {
+            return abort(400, 'Bad Request');
+        }
+        if ($input['user_id'] != $competition->host_id) {
+            return abort(403, 'Conflict');
+        }
+        $input['host_id'] = $input['user_id'];
+        $input['competition_name'] = $input['name'];
+        $input['competition_description'] = $input['description'];
 
-        $file = $request->file('background_picture');
-        $name = time() . $file->getClientOriginalName();
-        $filePath = 'competition/' . $name;
-        $file->storeAs(
-            'competition', $name, 's3'
-        );
-        $input['background_picture'] = 's3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $filePath;
-        $competition = $this->competitionRepository->create($input);
+
+        $competition = $this->competitionRepository->update($input,$competition_id);
         return response()->json([
             'success' => true
         ], 200);
@@ -187,7 +196,7 @@ class CompetitionController extends AppBaseController
     public function listCompetition(Request $request)
     {
         $input = $request->query();
-        $competitions = Competition::filterCompetition($input,$this->client,$this->competitionRepository);
+        $competitions = Competition::filterCompetition($input, $this->client, $this->competitionRepository);
         return $competitions;
 
     }
