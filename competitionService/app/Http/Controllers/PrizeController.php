@@ -58,7 +58,6 @@ class PrizeController extends AppBaseController
             return abort(403, 'Permission denied');
         }
 
-        $input['prize_name'] = $input['name'];
         $input['category_id'] = (int)$category_id;
         $prize = $this->prizeRepository->create($input);
         return response()->json(['prize_id'=>$prize->prize_id], 200);
@@ -97,7 +96,6 @@ class PrizeController extends AppBaseController
             return abort(403, 'Permission denied');
         }
 
-        $input['prize_name'] = $input['name'];
         $input['category_id'] = (int)$category_id;
 
         $prize = $this->prizeRepository->update($input, $prize_id);
