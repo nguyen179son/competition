@@ -79,7 +79,7 @@ class McController extends AppBaseController
         if (empty($competition) || empty($category) || empty($mc)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id || $mc->category_id != $mc_id) {
+        if ($category->competition_id != $competition_id || $mc->category_id != $category_id) {
             return abort(404, 'resource not found');
         }
         $input = $request->all();
@@ -119,7 +119,7 @@ class McController extends AppBaseController
             return abort(404, 'resource not found');
         }
 
-        if ($category->competition_id != $competition_id || $mc->category_id != $mc_id) {
+        if ($category->competition_id != $competition_id || $mc->category_id != $category_id) {
             return abort(404, 'resource not found');
         }
 

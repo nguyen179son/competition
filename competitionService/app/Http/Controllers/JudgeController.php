@@ -72,7 +72,7 @@ class JudgeController extends AppBaseController
         if (empty($competition) || empty($category) || empty($judge)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id || $judge->category_id != $judge_id) {
+        if ($category->competition_id != $competition_id || $judge->category_id != $category_id) {
             return abort(404, 'resource not found');
         }
         $input = $request->all();
@@ -112,7 +112,7 @@ class JudgeController extends AppBaseController
             return abort(404, 'resource not found');
         }
 
-        if ($category->competition_id != $competition_id || $judge->category_id != $judge_id) {
+        if ($category->competition_id != $competition_id || $judge->category_id != $category_id) {
             return abort(404, 'resource not found');
         }
 

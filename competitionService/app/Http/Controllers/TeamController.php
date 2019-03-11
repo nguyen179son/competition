@@ -87,7 +87,7 @@ class TeamController extends AppBaseController
         if (empty($competition) || empty($category) || empty($team)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id || $team->category_id != $team_id) {
+        if ($category->competition_id != $competition_id || $team->category_id != $category_id) {
             return abort(404, 'resource not found');
         }
         $input = $request->all();
@@ -131,7 +131,7 @@ class TeamController extends AppBaseController
         if (empty($competition) || empty($category) || empty($team)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id || $team->category_id != $team_id) {
+        if ($category->competition_id != $competition_id || $team->category_id != $category_id) {
             return abort(404, 'resource not found');
         }
         $input = $request->all();

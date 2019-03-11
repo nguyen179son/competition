@@ -79,7 +79,7 @@ class DjController extends AppBaseController
         if (empty($competition) || empty($category) || empty($dj)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id || $dj->category_id != $dj_id) {
+        if ($category->competition_id != $competition_id || $dj->category_id != $category_id) {
             return abort(404, 'resource not found');
         }
         $input = $request->all();
@@ -117,7 +117,7 @@ class DjController extends AppBaseController
         if (empty($competition) || empty($category) || empty($dj)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id || $dj->category_id != $dj_id) {
+        if ($category->competition_id != $competition_id || $dj->category_id != $category_id) {
             return abort(404, 'resource not found');
         }
         $input = $request->query();

@@ -80,7 +80,7 @@ class PrizeController extends AppBaseController
         if (empty($competition) || empty($category) || empty($prize)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id || $prize->category_id != $prize_id) {
+        if ($category->competition_id != $competition_id || $prize->category_id != $category_id) {
             return abort(404, 'resource not found');
         }
         $input = $request->all();
@@ -118,7 +118,7 @@ class PrizeController extends AppBaseController
         if (empty($competition) || empty($category) || empty($prize)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id || $prize->category_id != $prize_id) {
+        if ($category->competition_id != $competition_id || $prize->category_id != $category_id) {
             return abort(404, 'resource not found');
         }
         $input = $request->query();
