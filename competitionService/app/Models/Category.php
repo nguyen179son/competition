@@ -125,6 +125,8 @@ class Category extends Model
         $category['djs'] = $djs;
         $judges = \DB::table('judge')->where('category_id', '=', $category_id)->whereNull('deleted_at')->get();
         $category['judges'] = $judges;
+	$prizes = \DB::table('prize')->where('category_id', '=', $category_id)->whereNull('deleted_at')->get();
+        $category['prizes'] = $prizes;
         $teams = \DB::table('team')->where('category_id', '=', $category_id)->whereNull('deleted_at')->get();
         $team_tmp = [];
         foreach ($teams as $team) {
