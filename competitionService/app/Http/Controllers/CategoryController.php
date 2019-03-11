@@ -79,7 +79,7 @@ class CategoryController extends AppBaseController
         if ($input['user_id'] != $competition->host_id) {
             return abort(403, 'Permission denied');
         }
-        $input['dance_genre_id'] = DanceGenre::all()->where('dance_genre_name', '=', $input['dance_genre'])[0]->dance_genre_id;
+        $input['dance_genre_id'] = DanceGenre::all()->where('dance_genre_name', '=', $input['dance_genre'])->first()->dance_genre_id;
         $category = $this->categoryRepository->create($input);
         $returnValue=['category_id'=>$category->category_id];
         return response()->json($returnValue, 200);
