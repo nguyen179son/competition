@@ -47,6 +47,7 @@ class McController extends AppBaseController
         $input = $request->all();
         $validation = Validator::make($input, [
             'name' => 'required|string',
+	    'user_id' =>'required|string'
         ]);
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
@@ -84,6 +85,7 @@ class McController extends AppBaseController
         $input = $request->all();
         $validation = Validator::make($input, [
             'name' => 'required|string',
+	    'user_id' =>'required|string'
         ]);
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
@@ -121,8 +123,13 @@ class McController extends AppBaseController
             return abort(409, 'Conflict');
         }
 
-        $input = $request->all();
-
+        $input = $request->query();
+	$validation = Validator::make($input, [
+	    'user_id' =>'required|string'
+        ]);
+        if ($validation->fails()) {
+            return abort(400, 'Bad Request');
+        }
         if ($input['user_id'] != $competition->host_id) {
             return abort(403, 'Permission denied');
         }
