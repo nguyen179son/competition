@@ -102,7 +102,7 @@ class CategoryController extends AppBaseController
             return abort(404, 'resource not found');
         }
         if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+            return abort(404, 'resource not found');
         }
         $input = $request->all();
         if ($input['user_id'] != $competition->host_id) {
@@ -140,7 +140,7 @@ class CategoryController extends AppBaseController
             return abort(404, 'resource not found');
         }
         if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+            return abort(404, 'resource not found');
         }
         $input = $request->all();
         if ($input['user_id'] != $competition->host_id) {

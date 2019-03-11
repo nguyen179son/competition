@@ -42,7 +42,7 @@ class DjController extends AppBaseController
             return abort(404, 'resource not found');
         }
         if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+            return abort(404, 'resource not found');
         }
         $input = $request->all();
         $validation = Validator::make($input, [
@@ -79,8 +79,8 @@ class DjController extends AppBaseController
         if (empty($competition) || empty($category) || empty($dj)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+        if ($category->competition_id != $competition_id || $dj->category_id != $dj_id) {
+            return abort(404, 'resource not found');
         }
         $input = $request->all();
         $validation = Validator::make($input, [
@@ -117,8 +117,8 @@ class DjController extends AppBaseController
         if (empty($competition) || empty($category) || empty($dj)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+        if ($category->competition_id != $competition_id || $dj->category_id != $dj_id) {
+            return abort(404, 'resource not found');
         }
         $input = $request->query();
 	$validation = Validator::make($input, [

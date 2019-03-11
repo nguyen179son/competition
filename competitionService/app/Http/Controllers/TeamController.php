@@ -47,6 +47,9 @@ class TeamController extends AppBaseController
         if (empty($competition) || empty($category)) {
             return abort(404, 'resource not found');
         }
+	if ($category->competition_id != $competition_id) {
+            return abort(404, 'resource not found');
+        }
         $input = $request->all();
         $validation = Validator::make($input, [
             'name' => 'required|string',
@@ -82,6 +85,9 @@ class TeamController extends AppBaseController
         $category = $this->categoryRepository->findWithoutFail($category_id);
         $team = $this->teamRepository->findWithoutFail($team_id);
         if (empty($competition) || empty($category) || empty($team)) {
+            return abort(404, 'resource not found');
+        }
+        if ($category->competition_id != $competition_id || $team->category_id != $team_id) {
             return abort(404, 'resource not found');
         }
         $input = $request->all();
@@ -125,7 +131,9 @@ class TeamController extends AppBaseController
         if (empty($competition) || empty($category) || empty($team)) {
             return abort(404, 'resource not found');
         }
-
+        if ($category->competition_id != $competition_id || $team->category_id != $team_id) {
+            return abort(404, 'resource not found');
+        }
         $input = $request->all();
 	$validation = Validator::make($input, [
 	    'user_id' => 'required|integer'

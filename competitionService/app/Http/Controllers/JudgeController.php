@@ -35,7 +35,7 @@ class JudgeController extends AppBaseController
             return abort(404, 'resource not found');
         }
         if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+            return abort(404, 'resource not found');
         }
         $input = $request->all();
         $validation = Validator::make($input, [
@@ -72,8 +72,8 @@ class JudgeController extends AppBaseController
         if (empty($competition) || empty($category) || empty($judge)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+        if ($category->competition_id != $competition_id || $judge->category_id != $judge_id) {
+            return abort(404, 'resource not found');
         }
         $input = $request->all();
         $validation = Validator::make($input, [
@@ -112,8 +112,8 @@ class JudgeController extends AppBaseController
             return abort(404, 'resource not found');
         }
 
-        if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+        if ($category->competition_id != $competition_id || $judge->category_id != $judge_id) {
+            return abort(404, 'resource not found');
         }
 
         $input = $request->query();

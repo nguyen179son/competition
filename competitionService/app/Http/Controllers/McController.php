@@ -42,7 +42,7 @@ class McController extends AppBaseController
             return abort(404, 'resource not found');
         }
         if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+            return abort(404, 'resource not found');
         }
         $input = $request->all();
         $validation = Validator::make($input, [
@@ -79,8 +79,8 @@ class McController extends AppBaseController
         if (empty($competition) || empty($category) || empty($mc)) {
             return abort(404, 'resource not found');
         }
-        if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+        if ($category->competition_id != $competition_id || $mc->category_id != $mc_id) {
+            return abort(404, 'resource not found');
         }
         $input = $request->all();
         $validation = Validator::make($input, [
@@ -119,8 +119,8 @@ class McController extends AppBaseController
             return abort(404, 'resource not found');
         }
 
-        if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+        if ($category->competition_id != $competition_id || $mc->category_id != $mc_id) {
+            return abort(404, 'resource not found');
         }
 
         $input = $request->query();
