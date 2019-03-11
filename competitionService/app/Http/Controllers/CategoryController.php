@@ -42,7 +42,7 @@ class CategoryController extends AppBaseController
             return abort(404, 'Resource not found');
         }
         if ($category->competition_id != $competition_id) {
-            return abort(409, 'Conflict');
+            return abort(404, 'Resource not found');
         }
         $category = Category::findById($category_id);
         return response()->json($category,200);
