@@ -195,7 +195,7 @@ class Competition extends Model
                 return abort(400, 'Bad Request');
             }
             $category = $category
-                ->where('number_of_team_members','=', [$input['number_of_team_members']);
+                ->where('number_of_team_members','=', $input['number_of_team_members']);
         }
 
         if (isset($input['address_city']) && $input['address_city'] != null) {
