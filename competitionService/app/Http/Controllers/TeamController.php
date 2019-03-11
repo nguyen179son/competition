@@ -133,7 +133,7 @@ class TeamController extends AppBaseController
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
         }
-        if ($input['user_id'] != $competition->user_id) {
+        if ($input['user_id'] != $team->user_id) {
             return abort(403, 'Permission denied');
         }
 
