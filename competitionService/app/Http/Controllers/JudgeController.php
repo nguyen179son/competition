@@ -40,7 +40,7 @@ class JudgeController extends AppBaseController
         $input = $request->all();
         $validation = Validator::make($input, [
             'name' => 'required|string',
-	    'user_id' =>'required|string'
+	    'user_id' =>'required|integer'
         ]);
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
@@ -78,7 +78,7 @@ class JudgeController extends AppBaseController
         $input = $request->all();
         $validation = Validator::make($input, [
             'name' => 'required|string',
-	    'user_id' =>'required|string'
+	    'user_id' =>'required|integer'
         ]);
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
@@ -118,7 +118,7 @@ class JudgeController extends AppBaseController
 
         $input = $request->query();
 	$validation = Validator::make($input, [
-	    'user_id' =>'required|string'
+	    'user_id' =>'required|integer'
         ]);
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
