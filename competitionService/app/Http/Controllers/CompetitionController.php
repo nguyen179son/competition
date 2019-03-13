@@ -75,7 +75,7 @@ class CompetitionController extends AppBaseController
         $file->storeAs(
             'competition', $name, 's3'
         );
-        $input['background_picture'] = 's3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $filePath;
+        $input['background_picture'] = 'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $filePath;
 
         $competition = $this->competitionRepository->create($input);
 
@@ -144,7 +144,7 @@ class CompetitionController extends AppBaseController
             $file->storeAs(
                 'competition', $name, 's3'
             );
-            $input['background_picture'] = 's3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $filePath;
+            $input['background_picture'] = 'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/' . $filePath;
         }
         if ($validation->fails()) {
             return abort(400, 'Bad Request');
