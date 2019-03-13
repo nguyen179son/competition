@@ -139,7 +139,7 @@ class CompetitionController extends AppBaseController
                 'background_picture' => 'image|mimes:jpeg,jpg,png|max:10000',
             ]);
             $file = $request->file('background_picture');
-            $name = time() . $file->getClientOriginalName();
+            $name = substr(md5(microtime()),rand(0,26),64);
             $filePath = 'competition/' . $name;
             $file->storeAs(
                 'competition', $name, 's3'
